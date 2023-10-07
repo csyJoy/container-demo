@@ -1,2 +1,5 @@
 /build
 /.cache
+lib/.cache/clangd/index
+compile_commands.json
+fake_root
