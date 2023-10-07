@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(Container CXX)
-
+set(CMAKE_CXX_COMPILER clang++)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+project(Container CXX)
 
 add_subdirectory(lib)
 
