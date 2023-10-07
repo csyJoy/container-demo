@@ -20,6 +20,8 @@ struct RunCmd : public Cmd {
           args{std::forward<Args &&>(args)} {};
     Exception<std::monostate> run() noexcept override;
     static int setAndRun(void *);
+    static void chRoot();
+    static void setHostname(const std::string &hostname);
 };
 
 std::optional<std::unique_ptr<Cmd>> parse(int argc, char **argv) noexcept;

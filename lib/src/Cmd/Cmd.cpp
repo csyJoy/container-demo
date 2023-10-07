@@ -21,6 +21,17 @@ Exception<std::monostate> RunCmd::run() noexcept {
 int RunCmd::setAndRun(void *args) {
     char **innerArg = (char **)args;
     unshare(CLONE_NEWUTS | CLONE_NEWNS);
+    RunCmd::chRoot();
+    RunCmd::setHostname("root");
+    execve(innerArg[0], innerArg, NULL);
+    return 0;
+}
+
+void RunCmd::setHostname(const std::string &name) {
+    sethostname(name.c_str(), name.size());
+}
+
+void RunCmd::chRoot() {
     const char *new_root = "/home/csy/container/fake_root";
     const char *put_old = "/oldrootfs";
     char path[10000];
@@ -43,7 +54,4 @@ int RunCmd::setAndRun(void *args) {
         perror("umount2");
     if (rmdir(put_old) == -1)
         perror("rmdir");
-    sethostname("root", 4);
-    execve(innerArg[0], innerArg, NULL);
-    return 0;
 }
