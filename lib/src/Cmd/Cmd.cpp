@@ -23,7 +23,13 @@ int RunCmd::setAndRun(void *args) {
     unshare(CLONE_NEWUTS | CLONE_NEWNS | CLONE_NEWPID);
     RunCmd::chRoot();
     RunCmd::setHostname("root");
-    execve(innerArg[0], innerArg, NULL);
+    pid_t pid = fork();
+    if (pid == 0) {
+        mount("proc", "proc", "proc", 0, NULL);
+        execve(innerArg[0], innerArg, NULL);
+    } else {
+        waitpid(pid, NULL, 0);
+    }
     return 0;
 }
 
