@@ -20,7 +20,7 @@ Exception<std::monostate> RunCmd::run() noexcept {
 
 int RunCmd::setAndRun(void *args) {
     char **innerArg = (char **)args;
-    unshare(CLONE_NEWUTS | CLONE_NEWNS);
+    unshare(CLONE_NEWUTS | CLONE_NEWNS | CLONE_NEWPID);
     RunCmd::chRoot();
     RunCmd::setHostname("root");
     execve(innerArg[0], innerArg, NULL);
