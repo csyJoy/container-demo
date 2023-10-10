@@ -38,7 +38,7 @@ void RunCmd::setHostname(const std::string &name) {
 }
 
 void RunCmd::chRoot() {
-    const char *new_root = "/home/csy/container/fake_root";
+    const char *new_root = "../fake_root";
     const char *put_old = "/oldrootfs";
     char path[10000];
     if (mount(NULL, "/", NULL, MS_REC | MS_PRIVATE, NULL) == -1)
