@@ -20,7 +20,8 @@ Exception<std::monostate> RunCmd::run() noexcept {
 
 int RunCmd::setAndRun(void *args) {
     char **innerArg = (char **)args;
-    unshare(CLONE_NEWUTS | CLONE_NEWNS | CLONE_NEWPID);
+    if (unshare(CLONE_NEWUTS | CLONE_NEWNS | CLONE_NEWPID) == -1)
+        err(EXIT_FAILURE, "unshare");
     RunCmd::chRoot();
     RunCmd::setHostname("root");
     pid_t pid = fork();
