@@ -11,6 +11,6 @@ file(GLOB_RECURSE SRC ./src CONFIGURE_DEPENDS src/*.cpp)
 
 add_executable(${PROJECT_NAME} ${SRC})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE mini_container)
+target_link_libraries(${PROJECT_NAME} PRIVATE mini_container -static-libgcc -static-libstdc++ -static)
 
 target_include_directories(${PROJECT_NAME} PRIVATE include)
