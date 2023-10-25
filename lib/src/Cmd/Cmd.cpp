@@ -1,6 +1,7 @@
 #include <err.h>
 #include <iostream>
 #include <mini_container/Cmd/Cmd.hpp>
+#include <mini_container/Cgroup/FileSystem.hpp>
 #include <sys/mman.h>
 #include <sys/mount.h>
 #include <sys/stat.h>
@@ -14,11 +15,14 @@ Exception<std::monostate> RunCmd::run() noexcept {
     pid_t pid = clone(setAndRun, stack + RunCmd::stackSize, SIGCHLD, &args[0]);
     if (pid == -1)
         err(EXIT_FAILURE, "clone");
+    this->doControl(pid);
     waitpid(pid, NULL, 0);
+    this->cancelControl(pid);
     return std::monostate{};
 }
 
 int RunCmd::setAndRun(void *args) {
+    sleep(1);
     char **innerArg = (char **)args;
     if (unshare(CLONE_NEWUTS | CLONE_NEWNS | CLONE_NEWPID) == -1)
         err(EXIT_FAILURE, "unshare");
@@ -61,4 +65,14 @@ void RunCmd::chRoot() {
         perror("umount2");
     if (rmdir(put_old) == -1)
         perror("rmdir");
+}
+
+void RunCmd::doControl(int pid) {
+    CGroupVisitor vi{std::to_string(pid), pid};
+    for (auto e : this->cgv) {
+        std::visit(vi, e);
+    }
+}
+void RunCmd::cancelControl(int pid) {
+    CGHelper::deleteCGroup(std::to_string(pid));
 }
